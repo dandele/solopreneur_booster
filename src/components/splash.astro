@@ -28,9 +28,13 @@
         lanceremo
         (e avrai una sorpresa).
       </p>
-      <a href="">
-
-      </a>
+      <form id="emailForm" action="https://hook.eu1.make.com/gkq1rlryiimsgv27dcbi6vpd23yxqtjl" method="POST">
+        <input class="text-black px-2" type="email" id="email" name="email">
+        <button class="bg-white text-black px-2" type="submit" value="Aggiornatemi!">Aggiornatemi!</button>
+      </form>
+      <div id="confirmationMessage" style="display: none;">
+        La tua richiesta è stata inviata con successo!
+      </div>
     </div>
     <div id="astronaut" class="w-2/3 max-w-3xl self-start sm:w-10/12 sm:self-auto sm:justify-self-start">
       <Picture class="h-full w-full object-cover" src={astronautImage} widths={widths} sizes={sizes} loading="eager"
@@ -48,6 +52,16 @@
 </noscript>
 
 <style>
+  #subscribe_waiting {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .sc-5dd7ce2b-3 {
+    display: none !important;
+  }
+
   @keyframes float {
     0% {
       transform: translate3d(0, 0, 0);
@@ -76,3 +90,50 @@
     }
   }
 </style>
+
+
+{/* Rimozione pagina Accepted post-inserimento indirizzo email */}
+<script>
+  document.getElementById("emailForm").addEventListener("submit", function (event) {
+    event.preventDefault(); // Impedisce l'invio del modulo
+
+    var emailInput = document.getElementById("email");
+    var email = emailInput.value;
+
+    // Crea una nuova istanza di XMLHttpRequest
+    var xhr = new XMLHttpRequest();
+
+    // Configura la richiesta POST al tuo webhook Integromat
+    xhr.open("POST", "https://hook.eu1.make.com/gkq1rlryiimsgv27dcbi6vpd23yxqtjl", true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    // Crea un oggetto JSON con l'indirizzo email
+    var data = {
+      email: email
+    };
+
+    // Converte l'oggetto JSON in una stringa
+    var jsonData = JSON.stringify(data);
+
+    // Definisci un gestore per l'evento "load" (richiesta completata con successo)
+    xhr.addEventListener("load", function () {
+      if (xhr.status === 200) {
+        // La richiesta è stata completata con successo
+        // Puoi gestire la risposta qui, ad esempio, mostrare il messaggio di conferma
+        document.getElementById("emailForm").style.display = "none";
+        document.getElementById("confirmationMessage").style.display = "block";
+      } else {
+        // La richiesta ha avuto un problema, puoi gestire gli errori qui
+        console.error("Errore nella richiesta:", xhr.statusText);
+      }
+    });
+
+    // Definisci un gestore per l'evento "error" (errore di rete durante la richiesta)
+    xhr.addEventListener("error", function () {
+      console.error("Errore di rete durante la richiesta.");
+    });
+
+    // Invia la richiesta con i dati JSON
+    xhr.send(jsonData);
+  });
+</script>
